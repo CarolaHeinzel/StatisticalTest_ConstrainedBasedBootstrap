@@ -1,3 +1,5 @@
+# Constrained Based Bootstrap Model in the Admixture Model
+
 This repository contains the code that corresponds to xxx.
 
 We consider the Admixture Model, in which we aim to consider the ancestry of the individual from population $k$, called $q^0_k$. We test the hypothesis
@@ -14,3 +16,10 @@ It contains code to
 - example data from the 1000 Genomes Data to apply the constrained bootstrap test to.
 - Code to evaluate the statisical test (1).
 - Code to evaluate the statistical test (2).
+
+
+
+
+### Funding Acknowledgement
+
+Funded by the Deutsche Forschungsgemeinschaft (DFG, German Research Foundation) – Project-ID 499552394 – SFB 1597.
