@@ -2,6 +2,7 @@
 
 This repository contains the code that corresponds to xxx.
 
+## Background
 We consider the Admixture Model, in which we aim to consider the ancestry of the individual from population $k$, called $q^0_k$. We test the hypothesis
 
 $$    H_0: \max_{k = 1}^K q^0_k \geq \varepsilon \text{ vs. } H_1: \max_{k = 1}^K q^0_k < \varepsilon (1) $$
@@ -16,9 +17,17 @@ It contains code to
 - example data from the 1000 Genomes Data to apply the constrained bootstrap test to.
 - Code to evaluate the statisical test (1).
 - Code to evaluate the statistical test (2).
+## Code
 
+It contains
+* Joint_max.py: Code that helps to calculate the test statistic.
+* Max_CBB_implementation.py: Implementation of test (2).
+* Max_CBB_implementation_swap.py: Implementation of test (1).
+* Max_CBB_swap_application.py: Application of the test to real data.
+* Plot_Results.py: Plot the results. 
 
-
+## Data
+The code also contains some example data  (example_data.csv) that can be used to apply Max_CBB_swap_application.py to. This data is from the 1000 G Project and downloaded from the [GitHub Website of Peter Pfaffelhuber](https://github.com/pfaffelh/recent-admixture/blob/master/data/1000G/1000G_AIMsetKidd.vcf.gz).
 
 ### Funding Acknowledgement
 
