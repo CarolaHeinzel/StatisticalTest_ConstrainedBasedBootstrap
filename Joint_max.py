@@ -17,22 +17,12 @@ def create_sample_pqbekannt(M, K, p, q):
         x[m] = binom.rvs(n=2, p=loc[m])
     return x 
 
-#M = 10
-#K = 2
-#p = create_p(M, K)
-#x = create_sample_pqbekannt(M, K, p, [0.1, 0.9])
-
-#print(x)
-
-
 # Simulate the individuals with unkonw q, i.e. 
 #  max >= epsilon under H0 and  max < epsilon under H1
-# correct
 def create_sample_pbekannt(M, K, p, epsilon, booli):
     x = np.zeros(M)
     if(booli == 0): # H0 is the truth
         q  = dirichlet.rvs(alpha=np.ones(K))
-        #print(q[0])
         # max > epsilon
         while(max(q[0]) < epsilon):
             q = dirichlet.rvs(alpha=np.ones(K))
@@ -43,21 +33,14 @@ def create_sample_pbekannt(M, K, p, epsilon, booli):
         while(max(q[0]) >= epsilon):
             q = dirichlet.rvs(alpha=np.ones(K)) 
     for m in range(M):
-        
         loc = np.dot(q, p[m,:])
         x[m] = np.random.binomial(2, loc)[0]
     return q, x
 
-
 # likelihood in the Admixture Model
-# correct
 def l(q,x, p):
     K, M = p.shape
     res1 = 0
-    #for j in range(J):
-    #q = list(q) + [q_K]    
-    #q = [q, q_K]
-    #print(q)
     for m in range(M):
         loc = np.dot(q, p[m,:])
         x_temp = x[m] 
@@ -71,17 +54,13 @@ def constraint1(q):
 def constraint_q2(q, e):
     return max(q)  - e 
 
-
 # Calculates the MLE under H0
 def get_admixture_proportions_H0(x, p, K, e):
     q0 = np.random.rand(K)
     q0 /= np.sum(q0)  
-
-    #print(q0)
-    b = [(0, 1) for _ in range(K)]  # Bounds für jede Komponente von q
+    b = [(0, 1) for _ in range(K)] 
     cons = (
-        {'type': 'ineq', 'fun': constraint1}#,# Sum to 1
-       # {'type': 'ineq', 'fun': lambda q: constraint_q2(q, e)} # Maximum bigger than e, i..e under H0
+        {'type': 'ineq', 'fun': constraint1}
         )
     result = minimize(l, q0, args=(x, p), constraints=cons, bounds = b) #)
     return result.x
@@ -91,10 +70,6 @@ M = 100
 K = 4
 p = create_p(M, K)
 x = create_sample_pqbekannt(M, K, p, [0.1, 0.65, 0.2, 0.05])
-#test = get_admixture_proportions_H0(x, p, K, 0.1)
-#print(test)
-#print(l(test, x, p))
-#%%
 
 # Maximization for the whole parameter space
 def get_admixture_proportions(x, p, tol=1e-6):
@@ -118,14 +93,8 @@ def fun2(q, p, loc_x):
     res = np.sum(E, axis=1) / M * q / 2
     return res / np.sum(res)
 
-#test = get_admixture_proportions(x, p.T)
-#print(test)
-#print(l(test[0], x, p))
-
 #%%
-# Problem: The maximization does not work properly!!!
-
-# Soluation: grid search and use whole parameter space, if applicable
+# Grid search and use whole parameter space, if applicable
 def generate_reduced_simplex(K, step, mass):
     """Generates points on (K)-dimensional simplex that sum to `mass`."""
     result = []
@@ -163,26 +132,12 @@ def grid_search_l(l, x, p, K, step=0.01, epsilon=0.9):
 
     return best_q, best_val
 
-K = 3
-M = 1000
-p = create_p(M, K)
-x = create_sample_pqbekannt(M, K, p, [0.1, 0.2, 0.7])
-#best_q, best_val = grid_search_l(l, x, p, K)
-#print("Best q:", best_q)
-#print("Max value:", best_val)
-
 def combined(x, p, K, e):
     
     estimator_all = get_admixture_proportions(x, p.T)
-    # applicable 
-    #print(estimator_all)
     if max(estimator_all[0]) >= e:
         return estimator_all[0]
     else:
         # Grid Search
         q, max_val = grid_search_l(l, x, p, K, step=0.01, epsilon=e)
         return q
-
-
-#test_combined = combined(x, p, 3, 0.9)
-#print(test_combined)
