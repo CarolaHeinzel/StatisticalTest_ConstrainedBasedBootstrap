@@ -10,7 +10,6 @@ sys.path.append(module_path)
 
 import Joint_Max as joint
 
-
 def bootstrap_estimator(res, epsilon, K, x, p):
     d = max(res)
     
@@ -35,9 +34,7 @@ def create_bootstrap(p, B, res, epsilon, K, M, x1):
     for b in range(B):
         x1 = joint.create_sample_pqbekannt(M, K, p, q[0])
         temp_q2 = joint.get_admixture_proportions(x1, p.T)
-        #print("t",  temp_q2)
         d = max(temp_q2[0])
-        #print("d", d)
         hat_q1.append(d)
     return hat_q1
 
@@ -49,9 +46,6 @@ def test_descicion(alpha, p, x, epsilon, B, K, M):
     # Step 4, i.e. calculation of the quantiles
     quantile_value = np.quantile(d_bootstrap, alpha)    
     return d, quantile_value, d_bootstrap
-
-
-
 
 def evaluation_now(n, alpha, epsilon, B, K, M, booli):
     '''
@@ -70,6 +64,8 @@ def evaluation_now(n, alpha, epsilon, B, K, M, booli):
         True Ancestry.
     M : Int
         Number of markers.
+    booli: Int
+        Either 0 (if H0 is true) or 1 (if alternative is true).
 
     Returns
     -------
@@ -83,30 +79,13 @@ def evaluation_now(n, alpha, epsilon, B, K, M, booli):
     summe = 0
     for i in range(n):
         p = joint.create_p(M, K)
-        #print(p)
         q, x1 = joint.create_sample_pbekannt(M, K, p, epsilon, booli)
-        #print("q", q)
         d, q, d_bootstrap = test_descicion(alpha, p, x1, epsilon, B, K, M)
         # q is quantile
         if(d < q): # reject H0
             t = 1
-        else: # Do not reejct H0
+        else: # Do not reject H0
             t = 0
-        print("t", t)
         summe+= t
-        print(i)
-        print(summe/(i+1))
         res.append(t)
     return res
-#%%
-temp_hier_h1 = evaluation_now(100, 0.05, 0.9, 100, 2, 1000,1)
-print(temp_hier_h1)
-#%%
-temp_hier_h0 = evaluation_now(100, 0.05, 0.75, 100, 2, 1000,0)
-print(temp_hier_h0)
-#print(temp_hier)
-#%%
-temp_hier_h1_3 = evaluation_now(100, 0.05, 0.75, 100, 3, 100,1)
-print(temp_hier_h1_3)
-temp_hier_h0_3 = evaluation_now(100, 0.05, 0.75, 100, 3, 100,0)
-print(temp_hier_h0_3)
