@@ -3,6 +3,7 @@ from scipy.stats import dirichlet
 import sys
 import os
 #  Calculates the CBB Test for the Maximuum
+# Here, we swapped the hypotheses
 script_dir = os.path.dirname(os.path.abspath(__file__)) 
 module_path = os.path.join(script_dir) 
 
@@ -10,15 +11,27 @@ sys.path.append(module_path)
 
 import Joint_Max as joint
 
+def combined(x, p, K, e):
+    
+    estimator_all = joint.get_admixture_proportions(x, p.T)
+    if max(estimator_all[0]) <= e:
+        return estimator_all[0]
+    else:
+        # Grid Search
+        q, max_val = joint.grid_search_l(joint.l, x, p, K, step=0.01, epsilon=e)
+        return q
+
+
 def bootstrap_estimator(res, epsilon, K, x, p):
     d = max(res)
     
-    if(d < epsilon):
+    if(d > epsilon):
         # Calculate the MLE under the constraint that d = epsilon
-        res_test = joint.combined(x,p, K, epsilon)
+        res_test = combined(x,p, K, epsilon)
         hat_hat_q = res_test
-    else:
+    else: # normal MLE
         hat_hat_q = res
+    
     return hat_hat_q
 
 # Generate bootstrap data with the allele frequencies 
@@ -27,7 +40,6 @@ def create_bootstrap(p, B, res, epsilon, K, M, x1):
     # This is \hat \hat q
     q = bootstrap_estimator(np.array(res[0]), epsilon, K, x1, p)
     q = np.array([q])
-    
     # This is step 3.1 to 3.3
     for b in range(B):
         x1 = joint.create_sample_pqbekannt(M, K, p, q[0])
@@ -42,7 +54,7 @@ def test_descicion(alpha, p, x, epsilon, B, K, M):
     d = max(res[0])
     d_bootstrap = create_bootstrap(p, B, res, epsilon, K, M, x)
     # Step 4, i.e. calculation of the quantiles
-    quantile_value = np.quantile(d_bootstrap, alpha)    
+    quantile_value = np.quantile(d_bootstrap, 1-alpha)    
     return d, quantile_value, d_bootstrap
 
 def evaluation_now(n, alpha, epsilon, B, K, M, booli):
@@ -63,7 +75,7 @@ def evaluation_now(n, alpha, epsilon, B, K, M, booli):
     M : Int
         Number of markers.
     booli: Int
-        Either 0 (if H0 is true) or 1 (if alternative is true).
+        Either O (if H0 is true) or 1 (if H1 is true).
 
     Returns
     -------
@@ -74,16 +86,20 @@ def evaluation_now(n, alpha, epsilon, B, K, M, booli):
     '''
 
     res = []
+    # swap also the truth 
     summe = 0
+    booli = 1- booli
     for i in range(n):
         p = joint.create_p(M, K)
         q, x1 = joint.create_sample_pbekannt(M, K, p, epsilon, booli)
+        print("q", q)
         d, q, d_bootstrap = test_descicion(alpha, p, x1, epsilon, B, K, M)
         # q is quantile
-        if(d < q): # reject H0
+        print(d, q)
+        if(d > q): # reject H0
             t = 1
         else: # Do not reject H0
             t = 0
-        summe+= t
+        summe += t
         res.append(t)
     return res
