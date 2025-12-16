@@ -11,12 +11,6 @@ and
 
 $$    H_0: \max_{k = 1}^K q^0_k \leq \varepsilon \text{ vs. } H_1: \max_{k = 1}^K q^0_k > \varepsilon. (2)$$
 
-It contains code to 
-
-- apply the constrained based boostrap test for the Admixture Model to some data from the 1000 Genomes Project.
-- example data from the 1000 Genomes Data to apply the constrained bootstrap test to.
-- Code to evaluate the statisical test (1).
-- Code to evaluate the statistical test (2).
 ## Code
 
 It contains
@@ -24,10 +18,8 @@ It contains
 * Max_CBB_implementation.py: Implementation of test (2).
 * Max_CBB_implementation_swap.py: Implementation of test (1).
 * Max_CBB_swap_application.py: Application of the test to real data.
-* Plot_Results.py: Plot the results. 
-
-## Data
-The code also contains some example data  (example_data.csv) that can be used to apply Max_CBB_swap_application.py to. This data is from the 1000 G Project and downloaded from the [GitHub Website of Peter Pfaffelhuber](https://github.com/pfaffelh/recent-admixture/blob/master/data/1000G/1000G_AIMsetKidd.vcf.gz).
+* Plot_Results: Folder that contains the code to plot the results.
+* Simulation_Results: Folder that contains the results of the simulation. The data is from the 1000 G Project and downloaded from the [GitHub Website of Peter Pfaffelhuber](https://github.com/pfaffelh/recent-admixture/blob/master/data/1000G/1000G_AIMsetKidd.vcf.gz).
 
 ### Funding Acknowledgement
 
