@@ -1,30 +1,22 @@
 import pandas as pd
 import ast
 import numpy as np
-path = "results_0_swap_K2_1212_uniform.csv"
-
+import os
+import pandas as pd
+import matplotlib.pyplot as plt
+path = "results_0_swap_K2__uniform.csv"
 df_new = pd.read_csv(path)
-
-path = "results_1_swap_K2_2111_1000_500.csv"
-
-
+path = "results_1_swap_K2_uniform.csv"
 df = pd.read_csv(path)
 df['result'] = df['result']/500
-#df['result'] = df['result'].apply(lambda x: np.array(ast.literal_eval(x.replace('.', '.'))))
-#df1['result'] = df1['result'].apply(lambda x: np.array(ast.literal_eval(x.replace('.', '.'))))
-#df['result'] = df['result'].apply(lambda x: np.sum(x)/500)
-
 df_combined = pd.concat([df_new, df], ignore_index=True)
+df_combined = df_combined[df_combined["M"].isin([50, 100, 200, 500, 1000])]
 
 #%%
 df  = df_combined
-df["epsilon"] = df["epsilon"].replace(0.65, 0.67)
 df_combined = df_combined[df_combined["epsilon"] == 0.67]
 df = df_combined
-import os
-import numpy as np
-import pandas as pd
-import matplotlib.pyplot as plt
+
 
 # Assume df['result'] is already numeric (sum of arrays)
 output_folder = "plots_combined"
@@ -38,17 +30,11 @@ Ts = sorted(df['T'].unique())
 # Define colors for M
 # Define a color for each value
 color_map = {
-    50: "orange",     # existing
-    100: "blue",      # existing
-    150: "cyan",      # added
-    200: "green",     # existing
-    250: "purple",    # added
-    300: "yellow",    # added
-    350: "pink",      # added
-    400: "brown",     # added
-    450: "olive",     # added
-    500: "magenta",   # added
-    1000: "red"       # existing
+    50:   "blue",  #
+    100:  "#33a02c",  
+    200:  "#a6cee3",  
+    500:  "#b2df8a",  
+    1000: "#08519c"   
 }
 
 # Define markers for epsilon (expand if more than 3 epsilons)
@@ -88,48 +74,4 @@ plt.xticks(fontsize=18)
 plt.yticks(fontsize=18)
 # Save the combined plot
 plt.savefig(os.path.join(output_folder, "combined_plot.png"))
-plt.show()
-#%%
-
-df = df2
-# Choose one T value that should be plotted (example: T = 5)
-T_value = df["T"].unique()[2]     # or set manually, e.g. T_value = 5
-
-# Filter the DataFrame to one T
-df_T = df[df["T"] == T_value]
-
-# Define marker styles for different epsilon values
-marker_map = {
-    eps: marker for eps, marker in zip(
-        df_T["epsilon"].unique(),
-        ["o", "s", "^", "D", "v", "<", ">"]  # extend if needed
-    )
-}
-
-# Start plotting
-plt.figure(figsize=(7,5))
-
-for eps in df_T["epsilon"].unique():
-    print(eps)
-    # Select all rows for one epsilon value
-    df_eps = df_T[df_T["epsilon"] == eps]
-
-    # Plot M vs result using a dedicated marker
-    plt.plot(
-        df_eps["M"],
-        df_eps["result"],
-        marker_map[eps],
-        linestyle="-",
-        label=f"epsilon = {eps}"
-    )
-
-# Axis labels and legend
-plt.xlabel("M", fontsize = 16)
-plt.ylabel("Fraction of reject null hypothesis", fontsize = 16)
-plt.title(f"T = {T_value}", fontsize = 16)
-plt.legend(fontsize = 14)
-plt.xticks(fontsize=16)
-plt.yticks(fontsize=16)
-plt.grid(True)
-plt.tight_layout()
 plt.show()
