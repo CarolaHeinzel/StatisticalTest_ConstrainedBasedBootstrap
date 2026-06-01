@@ -19,7 +19,7 @@ It contains
 * Max_CBB_implementation_swap.py: Implementation of test (1).
 * Max_CBB_swap_application.py: Application of the test to real data.
 * Plot_Results: Folder that contains the code to plot the results.
-* Simulation_Results: Folder that contains the results of the simulation. The data is from the 1000 G Project and downloaded from the [GitHub Website of Peter Pfaffelhuber](https://github.com/pfaffelh/recent-admixture/blob/master/data/1000G/1000G_AIMsetKidd.vcf.gz).
+The data is from the 1000 G Project and downloaded from the [GitHub Website of Peter Pfaffelhuber](https://github.com/pfaffelh/recent-admixture/blob/master/data/1000G/1000G_AIMsetKidd.vcf.gz).
 
 ### Funding Acknowledgement
 
